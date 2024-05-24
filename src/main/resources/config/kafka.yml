@@ -1,0 +1,15 @@
+# kafka Config
+kafka:
+  # kafka server
+  bootstrap-servers: localhost:9092
+  consumer:
+    # bootstrap-servers: Other ServerIP:9092
+    # consumer Group Target Id
+    group-id: lucas
+    auto-offset-reset: earliest
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  producer:
+    # bootstrap-servers: Other ServerIP:9092
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
