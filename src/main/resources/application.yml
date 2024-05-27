@@ -4,9 +4,9 @@ spring:
 #      - classpath:config/kafka.yml
 
   # swagger3 web.mvc null Pointer Exception solve
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
 
   main:
     allow-circular-references: true
