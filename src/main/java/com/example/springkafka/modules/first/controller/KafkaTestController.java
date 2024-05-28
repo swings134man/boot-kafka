@@ -1,6 +1,6 @@
 package com.example.springkafka.modules.first.controller;
 
-import com.example.springkafka.modules.first.service.KafkaTestProducer;
+import com.example.springkafka.config.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class KafkaTestController {
 
-    private final KafkaTestProducer producer;
+    private final KafkaProducer producer;
 
 
     @PostMapping(value = "/kafka/test/publish")
-    public String sendMessage(@RequestParam String message) {
-        producer.sendMessage(message);
+    public String sendMessage(@RequestParam String topic ,@RequestParam String message) {
+        producer.sendMsg(topic, message);
         return "Send Success";
     }
 }
