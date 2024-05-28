@@ -3,11 +3,6 @@ spring:
 #    import:
 #      - classpath:config/kafka.yml
 
-  # swagger3 web.mvc null Pointer Exception solve
-#  mvc:
-#    pathmatch:
-#      matching-strategy: ant_path_matcher
-
   main:
     allow-circular-references: true
 
@@ -52,3 +47,7 @@ spring:
       # bootstrap-servers: Other ServerIP:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+# Swagger Login Setting (Token)
+#springdoc:
+#  show-login-endpoint: true
