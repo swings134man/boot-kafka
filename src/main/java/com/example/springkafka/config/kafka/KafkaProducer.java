@@ -1,4 +1,4 @@
-package com.example.springkafka.config;
+package com.example.springkafka.config.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

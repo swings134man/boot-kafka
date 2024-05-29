@@ -1,6 +1,6 @@
 package com.example.springkafka.modules.first.controller;
 
-import com.example.springkafka.config.KafkaProducer;
+import com.example.springkafka.config.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
