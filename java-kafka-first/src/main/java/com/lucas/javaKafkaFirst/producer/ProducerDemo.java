@@ -1,4 +1,4 @@
-package com.lucas.javaKafkaFirst;
+package com.lucas.javaKafkaFirst.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
