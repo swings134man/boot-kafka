@@ -11,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.opensearch.action.bulk.BulkRequest;
 import org.opensearch.action.bulk.BulkResponse;
@@ -112,6 +113,22 @@ public class OpenSearchConsumer {
         // 2. create Kafka Consumer
         KafkaConsumer<String, String> consumer = createKafkaConsumer();
 
+        // Main Thread Shutdown Signal With graceful Shutdown
+        final Thread mainThread = Thread.currentThread();
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            public void run() {
+                // 종료 Singal 이 발생했을때 해당 Thread 가 실행되고, mainThread 를 종료시킴.
+                logger.info("Detected ShutDown Hook !!");
+
+                consumer.wakeup();
+                try {
+                    mainThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         // 1-1 Create the index on OpenSearch if it doesn't exist(인덱스가 없다면 생성)
         // 요청이 성공,실패 어떤 경우든 close() 됨. -> 예외가 발생했을때 둘다 닫히게 함.
@@ -176,6 +193,15 @@ public class OpenSearchConsumer {
 //                consumer.commitSync();
 //                logger.info("Offsets have been committed");
             }
+        // try/catch For graceful Shutdown
+        }catch (WakeupException e){
+            logger.info("Consumer is starting to Shutdown !!");
+        }catch (Exception e){
+            logger.error("Unexpected Exception in the Consumer: ", e);
+        }finally {
+            consumer.close(); // Consumer Close, Commit offsets
+            openSearchClient.close();
+            logger.info("Consumer is Closed !!");
         }
     }//main
 }
