@@ -1,0 +1,41 @@
+spring:
+  config:
+    activate:
+      on-profile: proxy
+
+
+  # mariaDB Config
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://192.168.45.135:3360/boot_kafka?useSSL=false
+    username: develop
+    password: develop12!@
+
+  # JPA Config
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: none
+    defer-datasource-initialization: false
+  sql:
+    init:
+      mode: never
+
+  # kafka Config
+  kafka:
+    # kafka server
+    bootstrap-servers: 192.168.45.135:9092
+    consumer:
+      # bootstrap-servers: Other ServerIP:9092
+      # consumer Group Target Id
+      group-id: lucas
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      # bootstrap-servers: Other ServerIP:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
