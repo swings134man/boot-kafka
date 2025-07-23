@@ -1,0 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile: proxy
+
+  kafka:
+    # kafka server
+    bootstrap-servers: 192.168.45.135:9092

@@ -1,0 +1,14 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: flux-kafka
+
+  profiles:
+    active: proxy
+
+  config:
+    import:
+      - classpath:/configs/application-proxy.yml
