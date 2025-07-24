@@ -35,9 +35,7 @@ class KafkaController(
     @GetMapping("/stream/{topic}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun streamMessages(@PathVariable topic: String): Flux<ServerSentEvent<KafkaMessageDTO>> {
         return receiverService.consume(topic)
-            .map {
-                ServerSentEvent.builder(it).build()
-            }
+            .map { ServerSentEvent.builder(it).build() }
     }
 
 }
