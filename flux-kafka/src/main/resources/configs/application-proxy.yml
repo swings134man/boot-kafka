@@ -9,6 +9,7 @@ spring:
     consumer:
       group-id: lucas
       auto-offset-reset: latest
+#      enable-auto-commit: true
     producer:
       acks: all
       retries: 3

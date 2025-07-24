@@ -3,6 +3,7 @@ package com.lucas.fluxkafka.configs
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lucas.fluxkafka.commons.message.KafkaMessageDTO
+import com.lucas.fluxkafka.configs.properties.KafkaProperties
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -27,34 +28,29 @@ import kotlin.jvm.java
  * @description: 
  */
 @Configuration
-class KafkaConfig {
-
-    @Value("\${spring.kafka.bootstrap-servers}")
-    lateinit var hosts: String
-
-    @Value("\${spring.kafka.consumer.group-id}")
-    lateinit var groupId: String
-
-    @Value("\${spring.kafka.consumer.auto-offset-reset}")
-    lateinit var autoOffsetReset: String
-
+class KafkaConfig (
+    private val kafkaProperties: KafkaProperties
+){
 
     // ------------------ Consumer Configuration ------------------
     @Bean
     fun receiverOptions(objectMapper: ObjectMapper): ReceiverOptions<String, KafkaMessageDTO> {
         val properties = mapOf(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to hosts,
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to kafkaProperties.bootstrapServers,
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to JsonDeserializer::class.java,
-            ConsumerConfig.GROUP_ID_CONFIG to groupId,
-            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true, // auto commit(자동 커밋)
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to autoOffsetReset, // latest, earliest, none (어디부터 읽을지)
+            ConsumerConfig.GROUP_ID_CONFIG to kafkaProperties.consumer.groupId,
+//            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true, // auto commit(자동 커밋) reactor 에서 지원 하지 않음 false 권장함.
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to kafkaProperties.consumer.autoOffsetReset, // latest, earliest, none (어디부터 읽을지)
             JsonDeserializer.TYPE_MAPPINGS to "kafkaMessage:com.lucas.fluxkafka.commons.message.KafkaMessageDTO",
             JsonDeserializer.TRUSTED_PACKAGES to "*"
         )
 
-        return ReceiverOptions.create<String, KafkaMessageDTO>(properties)
+        val result = ReceiverOptions.create<String, KafkaMessageDTO>(properties)
             .withValueDeserializer(JsonDeserializer(KafkaMessageDTO::class.java, objectMapper))
+//            .consumerProperty("enable.auto.commit", true) // auto commit 사용원할시 이걸로 사용
+
+        return result
     }
 
 
@@ -62,7 +58,7 @@ class KafkaConfig {
     @Bean
     fun kafkaSender(objectMapper: ObjectMapper): KafkaSender<String, KafkaMessageDTO> {
         val properties = mapOf(
-            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to hosts,
+            ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to kafkaProperties.bootstrapServers,
             ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java,
             ProducerConfig.ACKS_CONFIG to "all",
