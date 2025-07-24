@@ -42,3 +42,4 @@
       - topic 구독을 하지않았으면, map 에 추가하고 flux 객체를 반환 -> 모든 사용자가 하나의 flux 를 공유
       - 구독상태면 map 안에 있는 flux 객체를 반환
     - 구독 취소시, 해당 Flux 객체를 제거 만약 클라이언트가 1명미만이라면 구독 종료 옵션 존재함
+> curl -N http://localhost:8080/api/kafka/stream/{topic-name}

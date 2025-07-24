@@ -8,7 +8,7 @@ spring:
     bootstrap-servers: 192.168.45.135:9092
     consumer:
       group-id: lucas
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
     producer:
       acks: all
       retries: 3

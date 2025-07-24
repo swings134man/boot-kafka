@@ -35,6 +35,9 @@ class KafkaConfig {
     @Value("\${spring.kafka.consumer.group-id}")
     lateinit var groupId: String
 
+    @Value("\${spring.kafka.consumer.auto-offset-reset}")
+    lateinit var autoOffsetReset: String
+
 
     // ------------------ Consumer Configuration ------------------
     @Bean
@@ -44,8 +47,8 @@ class KafkaConfig {
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to JsonDeserializer::class.java,
             ConsumerConfig.GROUP_ID_CONFIG to groupId,
-            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
-            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true,
+            ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to true, // auto commit(자동 커밋)
+            ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to autoOffsetReset, // latest, earliest, none (어디부터 읽을지)
             JsonDeserializer.TYPE_MAPPINGS to "kafkaMessage:com.lucas.fluxkafka.commons.message.KafkaMessageDTO",
             JsonDeserializer.TRUSTED_PACKAGES to "*"
         )
