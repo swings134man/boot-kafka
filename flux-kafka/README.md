@@ -23,3 +23,9 @@
 - `io.projectreactor.kafka:reactor-kafka` 사용으로 non-blocking kafka 사용
   - 이걸 사용하지 않고, `spring-kafka` 를 사용하면 blocking 방식으로 동작함
   - 배압 조절도 가능?
+
+---
+### TODO LIST 
+- 2025.07.24 
+  - pub/sub 기본적인 테스트는 완료 
+  - 다만 여러 클라이언트의 Consume시 : Rebalancing 이 발생하며, 기존 커넥션된 컨슈머, 새로 유입되는 유저 모두 오류가 발생함(무한루프 나다가 오류) 

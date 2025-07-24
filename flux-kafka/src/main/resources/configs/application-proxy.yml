@@ -6,3 +6,9 @@ spring:
   kafka:
     # kafka server
     bootstrap-servers: 192.168.45.135:9092
+    consumer:
+      group-id: lucas
+      auto-offset-reset: earliest
+    producer:
+      acks: all
+      retries: 3
