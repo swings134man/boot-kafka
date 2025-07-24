@@ -36,6 +36,7 @@ class KafkaReceiverService(
             KafkaReceiver.create(options)
                 .receive()
                 .doOnSubscribe { println("🎧 Subscribed to topic: $topic") }
+                .doOnNext { it.receiverOffset().acknowledge() } // 수동커밋 -> map 뒤에선 동작 안함.
                 .map { it.value() }
                 .publish()
                 .refCount(1) // 최소 1명부터 연결 유지
