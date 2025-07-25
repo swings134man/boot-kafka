@@ -1,5 +1,6 @@
 package com.lucas.fluxkafka.commons.message
 
+import com.lucas.fluxkafka.commons.logger
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.kafka.receiver.KafkaReceiver
@@ -11,13 +12,14 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @author: lucaskang(swings134man)
  * @since: 2025. 7. 24. 오후 4:21
- * @description: 
+ * @description: 에러 발생시, 해당 메시지 무시 및 구독유지
+ * - Deserializer 에서 null 반환된 경우, 해당 메시지 필터링 사용자에게 전달하지 않음
  */
 @Service
 class KafkaReceiverService(
     private val receiverOption: ReceiverOptions<String, KafkaMessageDTO>
 ) {
-
+    val logger = logger()
     private val topicFluxMap = ConcurrentHashMap<String, Flux<KafkaMessageDTO>>()
 
     /**
@@ -35,9 +37,13 @@ class KafkaReceiverService(
             val options = receiverOption.subscription(listOf(topic))
             KafkaReceiver.create(options)
                 .receive()
-                .doOnSubscribe { println("🎧 Subscribed to topic: $topic") }
+                .doOnSubscribe { logger.info("🎧 Subscribed to topic: $topic") }
                 .doOnNext { it.receiverOffset().acknowledge() } // 수동커밋 -> map 뒤에선 동작 안함.
                 .map { it.value() }
+                .filter { it != null } // null 값 필터링, Custom Deserializer 에서 null 반환된 경우
+                .onErrorContinue { error, item ->
+                    logger.error("Kafka Consume Error: ${error.message} -- Item: $item") // 에러 발생시 로그 출력, 처리안하면 구독취소됨. 여기선 에러발생시 무시하고 진행
+                }
                 .publish()
                 .refCount(1) // 최소 1명부터 연결 유지
         }

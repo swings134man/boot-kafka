@@ -1,5 +1,6 @@
 package com.lucas.fluxkafka.commons.message
 
+import com.lucas.fluxkafka.commons.logger
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.springframework.stereotype.Service
@@ -19,6 +20,8 @@ class KafkaSenderService(
     private val kafkaSender: KafkaSender<String, KafkaMessageDTO>
 ) {
 
+    val logger = logger()
+
     suspend fun sendMessage(topic: String, message: KafkaMessageDTO) {
         val senderRecord = SenderRecord.create(
             ProducerRecord(topic, message.sender, message),
@@ -27,8 +30,8 @@ class KafkaSenderService(
 
         kafkaSender.send(Flux.just(senderRecord))
             .next()
-            .doOnSuccess { println("✅ Sent to $topic: ${message.message}") }
-            .doOnError { println("❌ Failed to send: ${it.message}") }
+            .doOnSuccess { logger.info("✅ Sent to $topic: ${message.message}") }
+            .doOnError { logger.info("❌ Failed to send: ${it.message}") }
             .awaitFirstOrNull()
     }
 
