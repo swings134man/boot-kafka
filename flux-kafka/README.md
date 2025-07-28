@@ -51,3 +51,6 @@
 - `Reactor Kafka` 에서는 기본적으로 auto commit =true 를 권장하지 않음 그래서 false 로 강제해놨음
   - webflux 에서 사용시, auto commit 을 사용하면, 메세지를 처리하기 전에 offset 이 커밋되어 버리는 문제가 발생하기 때문
   - https://github.com/reactor/reactor-kafka/issues/326 참고문서
+
+- SSE TEST 시 Client 연결 shell command
+- `curl -N http://localhost:8080/api/kafka/stream/{topic-name}`

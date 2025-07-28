@@ -8,7 +8,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.support.serializer.JsonDeserializer
@@ -68,6 +67,7 @@ class KafkaConfig (
 
         val senderOptions = SenderOptions.create<String, KafkaMessageDTO>(properties)
             .withValueSerializer(JsonSerializer(objectMapper))
+//            .maxInFlight(256) // 최대 동시 전송 수, 1로 설정하면 순차적으로 전송됨, 256은 병렬 전송을 허용함(Backpressure 제어시 사용함) default 256
 
         return KafkaSender.create(senderOptions)
     }

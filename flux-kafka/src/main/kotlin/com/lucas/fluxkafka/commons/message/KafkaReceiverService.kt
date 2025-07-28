@@ -40,6 +40,7 @@ class KafkaReceiverService(
             val options = receiverOption.subscription(listOf(topic))
             KafkaReceiver.create(options)
                 .receive()
+                .limitRate(256)
                 .flatMap({ record ->
                     val value = record.value()
 
