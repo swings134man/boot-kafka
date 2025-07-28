@@ -24,7 +24,7 @@ class KafkaSenderService(
 
     suspend fun sendMessage(topic: String, message: KafkaMessageDTO) {
         val senderRecord = SenderRecord.create(
-            ProducerRecord(topic, message.sender, message),
+            ProducerRecord(topic, message.key, message),
             null
         )
 
